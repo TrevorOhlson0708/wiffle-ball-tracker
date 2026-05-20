@@ -45,6 +45,9 @@ def save_players(players):
         writer.writerows(players)
 
 def add_player():
+    players = load_players()
+    name = input("Players name: ").strip().title()
+    return
 
 def get_player():
 
