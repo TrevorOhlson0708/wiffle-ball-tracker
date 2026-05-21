@@ -32,10 +32,10 @@ def main():
 # Stats Calculations
 
 def calc_avg(hits, abs):
-    return round(hits / abs_, 3) if abs_ > o else 0.0
+    return round(hits / abs_, 3) if abs_ > 0 else 0.0
 
 def calc_obp(hits, walks, abs_):
-    ((hits + walks) / (abs_ + walks), 3) if (abs_ + walks) > 0 else 0.0
+    return ((hits + walks) / (abs_ + walks), 3) if (abs_ + walks) > 0 else 0.0
 
 def calc_slug(hits, hrs, abs_):
     total_bases = (hits - hrs) + (hrs * 4)
@@ -48,16 +48,16 @@ def calc_obps(obp, slg):
 
 def load_players():
     try:
-        with open(PLAYER_FILE) as file:
+        with open(PLAYERS_FILE) as file:
             reader = csv.DictReader(file)
             return [row for row in reader]
     except FileNotFoundError:
         return []
     
 def save_players(players):
-    with open(PLAYER_FILE, "w", newline="") as file:
+    with open(PLAYERS_FILE, "w", newline="") as file:
         stats = ["name", "ABs", "Hits", "HRs", "Walks", "Errors",]
-        writer = csv.DictWriter(file, stats=stats)
+        writer = csv.DictWriter(file, fieldnames=stats)
         writer.writeheader()
         writer.writerows(players)
 
@@ -65,19 +65,19 @@ def get_player(player, name):
     for player in players:
         if player["name"] == name:
             return player
-        return None
+    return None
 
 def add_player():
     players = load_players()
     name = input("Players name: ").strip().title()
     
-    if get_player(players, name):
+    if get_player(player, name):
         print(f"{name} already exists...")
         return
 
     players.append({"name": name, "ABs": 0, "Hits": 0, "HRs": 0, "Walks": 0, "Errors": 0})
     save_players(players)
-    peint(f"{name} was added!!")
+    print(f"{name} was added!!")
 
 # Game Functions
 
@@ -92,9 +92,9 @@ def load_games():
 def save_games(game):
     games = load_games()
     games.append(game)
-    with open(GAMES_FILE, "w", newline="") as file:
-        stats = ["date", "player", "ABs", "Hits", "HRs", "Walks", "Walks", "Errors"]
-        writer = csv.DictWriter(file, stats=stats)
+    with open(GAME_FILE, "w", newline="") as file:
+        stats = ["date", "player", "ABs", "Hits", "HRs", "Walks", "Errors"]
+        writer = csv.DictWriter(file, fieldnames=stats)
         writer.writeheader()
         writer.writerows(games)
 
@@ -145,17 +145,17 @@ def record_game():
         if stats is None:
             return
 
-        player["ABS"] = int(player["ABs"]) + stats["ABS"]
+        player["Abs"] = int(player["Abs"]) + stats["Abs"]
         player["Hits"] = int(player["Hits"]) + stats["Hits"]
         player["HRs"] = int(player["HRs"]) + stats["HRs"]
-        player["Walks"] = int(player["Wa;ks"]) + stats["Walks"]
+        player["Walks"] = int(player["Walks"]) + stats["Walks"]
         player["Errors"] = int(player["Errors"]) + stats["Errors"]
 
         game_entries.append({"date": date.today(), "player": player["name"], **stats})
 
     save_players(players)
     for entry in game_entries:
-        save_game(entry)
+        save_games(entry)
 
     print("Game recorded!!")
 
@@ -172,18 +172,18 @@ def view_stats():
     for p in players:
         abs_ = int(p["ABs"])
         hits = int(p["Hits"])
-        hrs = int(p["hrs"])
+        hrs = int(p["HRs"])
         walks = int(p["Walks"])
         errors = int(p["Errors"])
 
         avg = calc_avg(hits, abs_)
         obp = calc_obp(hits, walks, abs_)
-        slg = calc_slg(hits, hrs, abs_)
+        slg = calc_slug(hits, hrs, abs_)
         obps = calc_obps(obp, slg)
 
-        rows.append((p["name"], abs_, hits, hrs, errors, avg, obp, slg, obps))
+        row.append((p["name"], abs_, hits, hrs, walks, errors, avg, obp, slg, obps))
 
-    rows.sort(key=lambda r: r[9], reverse=True)
+    row.sort(key=lambda r: r[9], reverse=True)
 
     print(f"\n{'Name':<15} {'ABs':<5} {'Hits':<6} {'HRs':<5} {'Walks':<7} {'Errors':<8} {'AVG':<6} {'OBP':<6} {'SLG':<6} {'OBPS'}")
     print("-" * 75)
