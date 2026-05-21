@@ -31,11 +31,11 @@ def main():
 
 # Stats Calculations
 
-def calc_avg(hits, abs):
+def calc_avg(hits, abs_):
     return round(hits / abs_, 3) if abs_ > 0 else 0.0
 
 def calc_obp(hits, walks, abs_):
-    return ((hits + walks) / (abs_ + walks), 3) if (abs_ + walks) > 0 else 0.0
+    return round((hits + walks) / (abs_ + walks), 3) if (abs_ + walks) > 0 else 0.0
 
 def calc_slug(hits, hrs, abs_):
     total_bases = (hits - hrs) + (hrs * 4)
@@ -61,7 +61,7 @@ def save_players(players):
         writer.writeheader()
         writer.writerows(players)
 
-def get_player(player, name):
+def get_player(players, name):
     for player in players:
         if player["name"] == name:
             return player
@@ -71,7 +71,7 @@ def add_player():
     players = load_players()
     name = input("Players name: ").strip().title()
     
-    if get_player(player, name):
+    if get_player(players, name):
         print(f"{name} already exists...")
         return
 
@@ -145,7 +145,7 @@ def record_game():
         if stats is None:
             return
 
-        player["Abs"] = int(player["Abs"]) + stats["Abs"]
+        player["ABs"] = int(player["ABs"]) + stats["ABs"]
         player["Hits"] = int(player["Hits"]) + stats["Hits"]
         player["HRs"] = int(player["HRs"]) + stats["HRs"]
         player["Walks"] = int(player["Walks"]) + stats["Walks"]
@@ -168,7 +168,7 @@ def view_stats():
         print("No players yet.")
         return
 
-    row = []
+    rows = []
     for p in players:
         abs_ = int(p["ABs"])
         hits = int(p["Hits"])
@@ -181,9 +181,9 @@ def view_stats():
         slg = calc_slug(hits, hrs, abs_)
         obps = calc_obps(obp, slg)
 
-        row.append((p["name"], abs_, hits, hrs, walks, errors, avg, obp, slg, obps))
+        rows.append((p["name"], abs_, hits, hrs, walks, errors, avg, obp, slg, obps))
 
-    row.sort(key=lambda r: r[9], reverse=True)
+    rows.sort(key=lambda r: r[9], reverse=True)
 
     print(f"\n{'Name':<15} {'ABs':<5} {'Hits':<6} {'HRs':<5} {'Walks':<7} {'Errors':<8} {'AVG':<6} {'OBP':<6} {'SLG':<6} {'OBPS'}")
     print("-" * 75)
