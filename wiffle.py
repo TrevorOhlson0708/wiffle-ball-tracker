@@ -12,7 +12,8 @@ def main():
         print("2. Record Game")
         print("3. View Stats")
         print("4. view Game History")
-        print("5. quit")
+        print("5. Edit players stats")
+        print("6. quit")
 
         choice = input("\nChoose an option: ").strip()
         
@@ -25,6 +26,8 @@ def main():
         elif choice == "4":
             view_history()
         elif choice == "5":
+            edit_player_stats()
+        elif choice == "6":
             sys.exit("Smell ya")
         else:
             print("INVALID INPUT... try again :)")
@@ -201,6 +204,39 @@ def view_history():
     print("-" * 55)
     for g in games:
         print(f"{g['date']:<12} {g['player']:<15} {g['ABs']:<5} {g['Hits']:<6} {g['HRs']:<5} {g['Walks']:<7} {g['Errors']}")
+
+# Edit Functions
+
+def edit_player_stats():
+    players = load_players()
+
+    if not players:
+        print("No players yet.")
+        return
+
+    print("\nPlayers:", ", ".join(p["name"] for p in players))
+    name = input("Enter player name to edit: ").strip().title()
+
+    player = get_player(players, name)
+    if not player:
+        print(f"{name} not found.")
+        return
+
+    print(f"\nCurrent stats for {name}:")
+    print(f"  ABs: {player['ABs']}  Hits: {player['Hits']}  HRs: {player['HRs']}  Walks: {player['Walks']}  Errors: {player['Errors']}")
+    print("Enter new values (press Enter to keep current):")
+
+    fields = {"ABs": "ABs", "Hits": "Hits", "HRs": "HRs", "Walks": "Walks", "Errors": "Errors"}
+    for label, key in fields.items():
+        raw = input(f"  {label} [{player[key]}]: ").strip()
+        if raw:
+            try:
+                player[key] = int(raw)
+            except ValueError:
+                print(f"  Invalid value for {label}, keeping {player[key]}.")
+
+    save_players(players)
+    print(f"{name}'s stats updated!")
 
 if __name__ == "__main__":
     main()
