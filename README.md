@@ -33,9 +33,9 @@ Adds a new player to the roster. All stats start at zero.
 ### 2. Record Game
 Enter the names of everyone who played (press Enter on a blank line when done).
 You'll then be prompted to enter each player's stats for that game:
-- **ABs** — At Bats
+- **ABs**
 - **Hits**
-- **HRs** — Home Runs
+- **HRs**
 - **Walks**
 - **Errors**
 
