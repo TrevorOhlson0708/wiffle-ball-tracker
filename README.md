@@ -1,6 +1,6 @@
 # Wiffle Ball Tracker
 
-A command-line app for tracking wiffle ball player stats across multiple games. Built with Python using CSV files for data storage.
+A command-line app for tracking wiffle ball player stats across multiple games. Built with Python using CSV files for data storage
 
 ---
 
